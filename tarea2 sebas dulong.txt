@@ -1,0 +1,31 @@
+-----1-----
+
+select concat(c.first_name, ' ', c.last_name) as "name", c.email 
+from customer c join address a using (address_id) join city c2 using (city_id) join country c3 using (country_id)
+where c3.country = 'Canada'
+
+-----2-----
+
+select count(f.rating) as "count", c.customer_id, concat(c.first_name, ' ', c.last_name) as "nombre" from customer c 
+join rental r on (c.customer_id = r.customer_id) 
+join inventory i on (r.inventory_id=i.inventory_id)
+join film f on (i.film_id=f.film_id) 
+where f.rating = 'NC-17'  
+group by c.customer_id 
+order by "count" desc limit 1;
+
+-----3-----
+
+select distinct on (store_id) film_id, f.title, count(film_id) as "cuenta", store_id from inventory i 
+join rental r using (inventory_id) 
+join film f using (film_id)
+group by film_id, store_id 
+order by store_id, "cuenta" desc;
+
+-----4-----
+
+select distinct on (store_id) sum(p.amount) as "monto", store_id from payment p
+join rental r using (rental_id)
+join inventory i using (inventory_id)
+group by store_id 
+order by store_id
